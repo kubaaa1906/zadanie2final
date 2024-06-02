@@ -56,8 +56,8 @@ jobs:
             type=registry,ref=${{ vars.DOCKERHUB_USERNAME }}/example:cache  
           tags: ${{ steps.meta.outputs.tags }}
       
-        
-      name: Docker Scout
+      -
+        name: Docker Scout
         id: docker-scout
         uses: docker/scout-action@v1
         with:
