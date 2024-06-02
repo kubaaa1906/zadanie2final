@@ -42,28 +42,26 @@ jobs:
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - 
-        name: Build an image from Dockerfile
+      -
+        name: Build image from dockerfile
         run: |
-          docker build -t zadanie2:v1 .
-          
+          docker build -t docker.io/kubaa1906/example:${{ github.sha }}
+        
+      - 
+        name: Scan Docker image with Docker Scout
+        id: docker-scout
+        run: |
+          docker scout cves ${{ vars.DOCKERHUB_USERNAME }}/example:${{ github.sha }} --exit-code 1 --only-severities critical,high
 
       -
-        name: Docker Scanning
-        id: scan
-        uses: docker/scan-action@v1
-        with:
-          name: ghcr.io/kubaa1906/Zadanie2:${{ github.sha }}
-          severity: CRITICAL, HIGH
-          exit-code: 1
-          format: table
-      -
-        name: Tag docker image
-        if: steps.scan.outputs.findings-summary.high == 0
-        run: docker tag ghcr.io/kubaa1906/Zadanie2:${{ github.sha }} ghcr.io/kubaa1906/Zadanie2:succeed
+        name: New tag of docker image
+        if: steps.docker-scout.outcome == 'success'
+        run: docker tag docker.io/kubaa1906/example:${{ github.sha }} docker.io/kubaa1906/example:success
 
-      -
-        name: Push docker image
-        if: steps.scan.outputs.findings-summary.high == 0
-        run: docker image push ghcr.io/kubaa1906/Zadanie2:succeed
+      - 
+        name: Push image to DockerHub
+        if: steps.docker-scout.outcome == 'success'
+        run: docker image push docker.io/kubaa1906/example:success
+    
+        
       
