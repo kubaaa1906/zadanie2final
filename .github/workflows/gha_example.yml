@@ -66,17 +66,9 @@ jobs:
           only-severities: critical,high
 
       -
-        name: Extract first tag
-        id: extract-tag
-        run: |
-          echo "FIRST_TAG=$(echo ${{ steps.meta.outputs.tags }} | cut -d',' -f1)" >> $GITHUB_ENV
-          echo "All tags: ${{ steps.meta.outputs.tags }}"
-          echo "First tag: $FIRST_TAG"
-
-      -
         name: New tag of docker image
         if: steps.docker-scout.outcome == 'success'
-        run: docker tag ${{ env.FIRST_TAG }} docker.io/kubaa1906/example:success
+        run: docker tag ${{ steps.meta.outputs.tags }} docker.io/kubaa1906/example:success
 
       - 
         name: Push image to DockerHub
