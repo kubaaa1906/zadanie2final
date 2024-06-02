@@ -42,21 +42,31 @@ jobs:
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      -
-        name: Build image from dockerfile
-        run: |
-          docker build -t docker.io/kubaa1906/example:${{ github.sha }}
+      - 
+        name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          cache-from: |
+            type=registry,ref=${{ vars.DOCKERHUB_USERNAME }}/example:cache 
+          cache-to: |
+            type=registry,ref=${{ vars.DOCKERHUB_USERNAME }}/example:cache  
+          tags: ${{ steps.meta.outputs.tags }}
+      
         
       - 
         name: Scan Docker image with Docker Scout
         id: docker-scout
         run: |
-          docker scout cves ${{ vars.DOCKERHUB_USERNAME }}/example:${{ github.sha }} --exit-code 1 --only-severities critical,high
+          docker scout cves ${{ steps.meta.outputs.tags }} --exit-code 1 --only-severities critical,high
 
       -
         name: New tag of docker image
         if: steps.docker-scout.outcome == 'success'
-        run: docker tag docker.io/kubaa1906/example:${{ github.sha }} docker.io/kubaa1906/example:success
+        run: docker tag ${{ steps.meta.outputs.tags }} docker.io/kubaa1906/example:success
 
       - 
         name: Push image to DockerHub
