@@ -1,0 +1,21 @@
+# Zadanie 2:
+
+Test przy użyciu Docker Scout
+-
+  name: Scan with Docker Scout
+  id: docker-scout
+  uses: docker/scout-action@v1
+  with:
+    command: cves
+    image: ${{ steps.meta.outputs.tags }}
+    only-severities: critical,high
+
+Został skonfigurowany w następujący sposób:
+1. id: docker-scout - ustawienie id na docker-scout
+2. uses: docker/scout-action@v1 - użycie modułu Docker Scout
+3. with: - określenie parametrów
+  1. command: cves - użycie cves do skanowania obrazów
+  2. image: ... - określenie obrazu, który ma być zeskanowany. Ustawiony jest on w sekcji build and push docker image
+  3. only-severities: critical, high - wyświetlenie zagrożeń sklasyfikowanych jako krytyczne lub wysokie
+
+W następnych krokach sprawdzamy, czy krok z docker-scout zakończył się "success", jeśli tak, wtedy pullujemy obraz, tagujemy go jako "succeed" oraz pushujemy na dockerhub.
