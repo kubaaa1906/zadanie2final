@@ -57,13 +57,18 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
       
       -
-        name: Docker Scout
+        name: Scan with Docker Scout
         id: docker-scout
         uses: docker/scout-action@v1
         with:
           command: cves
           image: ${{ steps.meta.outputs.tags }}
           only-severities: critical,high
+
+      - 
+        name: Pull Docker image
+        if: steps.docker-scout.outcome == 'success'
+        run: docker pull ${{ vars.DOCKERHUB_USERNAME }}/example:${{ steps.meta.outputs.tags }}
 
       -
         name: New tag of docker image
