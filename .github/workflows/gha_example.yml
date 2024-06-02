@@ -68,12 +68,12 @@ jobs:
       -
         name: New tag of docker image
         if: steps.docker-scout.outcome == 'success'
-        run: docker image tag docker.io/${{ steps.meta.outputs.tags }} docker.io/kubaa1906/example:success
+        run: docker tag docker.io/${{ steps.meta.outputs.tags }} docker.io/kubaa1906/example:succeed
 
       - 
         name: Push image to DockerHub
         if: steps.docker-scout.outcome == 'success'
-        run: docker image push docker.io/kubaa1906/example:success
+        run: docker image push docker.io/kubaa1906/example:succeed
     
         
       
