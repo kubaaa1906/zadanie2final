@@ -68,7 +68,7 @@ jobs:
       - 
         name: Pull Docker image
         if: steps.docker-scout.outcome == 'success'
-        run: docker pull ${{ vars.DOCKERHUB_USERNAME }}/example:${{ steps.meta.outputs.tags }}
+        run: docker pull docker.io/${{ steps.meta.outputs.tags }}
 
       -
         name: New tag of docker image
