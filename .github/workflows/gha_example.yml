@@ -68,8 +68,10 @@ jobs:
       -
         name: Extract first tag
         id: extract-tag
-        run: echo "FIRST_TAG=$(echo ${{ steps.meta.outputs.tags }} | cut -d',' -f1)" >> $GITHUB_ENV
-
+        run: |
+          echo "FIRST_TAG=$(echo ${{ steps.meta.outputs.tags }} | cut -d',' -f1)" >> $GITHUB_ENV
+          echo "All tags: ${{ steps.meta.outputs.tags }}"
+          echo "First tag: $FIRST_TAG"
 
       -
         name: New tag of docker image
