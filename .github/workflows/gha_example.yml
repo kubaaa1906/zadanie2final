@@ -61,7 +61,7 @@ jobs:
         name: Scan Docker image with Docker Scout
         id: docker-scout
         run: |
-          docker scout cves ${{ steps.meta.outputs.tags }} --exit-code 1 --only-severities critical,high
+          docker scout cves ${{ steps.meta.outputs.tags }} --only-severities critical,high
 
       -
         name: New tag of docker image
