@@ -65,7 +65,7 @@ jobs:
           image: ${{ steps.meta.outputs.tags }}
           only-severities: critical,high
 
-       -
+      -
         name: Extract first tag
         id: extract-tag
         run: echo "FIRST_TAG=$(echo ${{ steps.meta.outputs.tags }} | cut -d',' -f1)" >> $GITHUB_ENV
